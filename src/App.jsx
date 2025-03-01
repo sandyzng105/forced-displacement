@@ -26,23 +26,17 @@ function App() {
 //mock function
 const handleSubmit = async (e) => {
   e.preventDefault();
-  
   // Simulate API Response (Success)
   console.log("Mock API Call - Data Submitted:", formData);
-
   // Show a success message
   setMessage("Mock Sign-up successful!");
-
   // Store in localStorage (Temporary for testing)
   localStorage.setItem("volunteerData", JSON.stringify(formData));
-
   // Reset form
   setFormData({ name: "", email: "", phone: "", location: "" });
-
   // Hide message after 3s
   setTimeout(() => setMessage(""), 3000);
 };
-
 
   //legit function
   // const handleSubmit = async (e) => {
