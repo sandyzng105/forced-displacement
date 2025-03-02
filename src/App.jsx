@@ -241,25 +241,26 @@ function Posts() {
   const posts = [
     {
       id: 1,
-      title: "Winter Coats Needed",
-      orgName: "Refugee Aid Boston",
-      description: "Looking for warm coats, scarves, and hats for new arrivals.",
-      location: "Boston, MA", // Location tag
-    },
-    {
+           title: "Gift Cards Needed",
+           orgName: "IINE Boston",
+           description: "Looking for department store gift cards to help buy clothes for a family.",
+           location: "Boston, MA",
+      },
+      {
       id: 2,
-      title: "Volunteers for English Classes",
-      orgName: "Community Center Lowell",
-      description: "Seeking volunteers to help teach basic English twice a week.",
-      location: "Lowell, MA", // Location tag
-    },
-    {
+           title: "Furnishing Apartment",
+           orgName: "IINE Lowell",
+           description: "Looking for furniture and volunteers to help transport furniture via car for a new arrival.",
+           location: "Lowell, MA",
+      },
+      {
       id: 3,
-      title: "Household Items & Furniture",
-      orgName: "Manchester Help Group",
-      description: "Need gently used furniture, dishes, and bedding.",
-      location: "Manchester, NH", // Location tag
-    },
+           title: "Packaged Food",
+           orgName: "IINE Manchester",
+           description: "Looking for meals to support influx of new families.",
+           location: "Manchester, NH",
+      },
+      
   ];
 
   const [addedPosts, setAddedPosts] = useState({});
