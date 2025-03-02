@@ -1,13 +1,19 @@
 from flask import Flask
+from flask_migrate import Migrate
+from database import db  
+from models import Auth  
 
-# Initialize the Flask application
+# create Flask `app`
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///auth.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Define a route for the homepage
+db.init_app(app)
+migrate = Migrate(app, db)
+
 @app.route('/')
 def home():
     return "Hello, Flask!"
-
-# Run the application
+ 
 if __name__ == '__main__':
     app.run(debug=True)
