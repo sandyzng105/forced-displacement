@@ -11,7 +11,7 @@ function Header() {
         text-white
         mt-6
         mx-auto
-        w-full
+        w-max
         max-w-7xl
         h-20
         px-8
@@ -450,25 +450,33 @@ const OrganizerDashboard = () => {
   const [posts, setPosts] = useState([
     {
       id: 1,
-      title: "Winter Coats Needed",
-      description: "Looking for warm coats, scarves, and hats for new arrivals.",
+      title: "Gift Cards needed",
+      description: "Looking for department store gift cards to help buy clothes for a family.",
       status: "Pending",
       volunteers: [],
-    },
-    {
+      }, 
+      {
       id: 2,
-      title: "Volunteers for English Classes",
-      description: "Seeking volunteers to help teach basic English twice a week.",
+      title: "Furnishing apartment",
+      description: "Looking for furniture and volunteers to help transport (car) for a new arrival.",
       status: "Fulfilled",
-      volunteers: ["John Doe", "Jane Smith"],
-    },
-    {
+      volunteers: ["Adam Thompson"],
+      },
+      {
       id: 3,
-      title: "Household Items & Furniture",
-      description: "Need gently used furniture, dishes, and bedding.",
+      title: "Packaged food",
+      description: "Looking for meals to support influx of new families",
+      status: "Fulfilled",
+      volunteers: [],
+      },
+      {
+      id: 4,
+      title: "Blankets",
+      description: "Need blankets for a family of 5",
       status: "Pending",
-      volunteers: ["Alice Johnson"],
-    },
+      volunteers: [],
+      },
+      
   ]);
 
   // Function to delete a post
@@ -563,25 +571,33 @@ const ResourcesPage = () => {
   const [resources, setResources] = useState([
     {
       id: 1,
-      name: "Winter Coats",
-      description: "Looking for warm coats, scarves, and hats for new arrivals.",
-      status: "Pending",
-      volunteers: ["John Doe", "Jane Smith"],
-    },
-    {
-      id: 2,
-      name: "English Teachers",
-      description: "Seeking volunteers to help teach basic English twice a week.",
-      status: "Fulfilled",
-      volunteers: ["Alice Johnson"],
-    },
-    {
-      id: 3,
-      name: "Household Items",
-      description: "Need gently used furniture, dishes, and bedding.",
+      name: "Gift Cards needed",
+      description: "Looking for department store gift cards to help buy clothes for a family.",
       status: "Pending",
       volunteers: [],
-    },
+      }, 
+      {
+      id: 2,
+      name: "Furnishing apartment",
+      description: "Looking for furniture and volunteers to help transport (car) for a new arrival.",
+      status: "Fulfilled",
+      volunteers: ["Adam Thompson"],
+      },
+      {
+      id: 3,
+      name: "Packaged food",
+      description: "Looking for meals to support influx of new families",
+      status: "Fulfilled",
+      volunteers: ["Zak Gladney"],
+      },
+      {
+      id: 4,
+      name: "Blankets",
+      description: "Need blankets for a family of 5",
+      status: "Pending",
+      volunteers: ["Sandy Zheng"],
+      },
+    
   ]);
 
   // Function to delete a resource
@@ -769,7 +785,7 @@ const CreatePost = ({ handleAddPost }) => {
 
 const AppLayout = () => {
   const location = useLocation();
-  const showHeader = !["/posts", "/organizer", "/resources"].includes(location.pathname);
+  const showHeader = !["/posts", "/organizer", "/resources", "/create-post"].includes(location.pathname);
 
   return (
     <>
@@ -782,6 +798,7 @@ const AppLayout = () => {
             <Route path="/posts" element={<Posts />} />
             <Route path="/organizer" element={<OrganizerDashboard />} />
             <Route path="/resources" element={<ResourcesPage />} />
+            <Route path="/create-post" element={<CreatePost />} />
       </Routes>
     </>
   );
