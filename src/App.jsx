@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
 import "./App.css";
 
 //Header
@@ -24,24 +24,28 @@ function Header() {
         overflow-hidden
       "
     >
-      <div className="text-3xl font-bold">PATHWAY</div>
+      
       <nav className="flex gap-6 text-lg">
-        <Link to="/" className="hover:text-gray-300">
+
+      <div className="text-3xl font-bold mt-2">PATHWAY</div>
+        <Link to="/" className="hover:text-gray-300 mt-3">
           Home
         </Link>
-        <Link to="/feed" className="hover:text-gray-300">
+        <Link to="/feed" className="hover:text-gray-300 mt-3">
           Feed
         </Link>
-        <Link to="/faq" className="hover:text-gray-300">
+        <Link to="/faq" className="hover:text-gray-300 mt-3">
           FAQ
         </Link>
-        <Link to="/contact" className="hover:text-gray-300">
-          Contact
+
+        <Link to="/signin">
+          <button className="ml-auto bg-blue-600 text-black px-4 py-2 rounded-full hover:bg-blue-700 transition duration-200">
+            Sign In
+          </button>
         </Link>
+
       </nav>
-      <button className="bg-blue-600 px-4 py-2 rounded-full hover:bg-blue-700 transition duration-200">
-        Sign In
-      </button>
+      
     </header>
   );
 }
@@ -126,7 +130,7 @@ function Home() {
 
               <button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 p-4 rounded-lg font-bold shadow-lg transition duration-200"
+                className="w-full text-black bg-blue-600 hover:bg-blue-700 p-4 rounded-lg font-bold shadow-lg transition duration-200"
               >
                 Submit
               </button>
@@ -232,19 +236,340 @@ function FAQ() {
   );
 }
 
+// Posts component
+function Posts() {
+  const posts = [
+    {
+      id: 1,
+      title: "Winter Coats Needed",
+      orgName: "Refugee Aid Boston",
+      description: "Looking for warm coats, scarves, and hats for new arrivals.",
+      location: "Boston, MA", // Location tag
+    },
+    {
+      id: 2,
+      title: "Volunteers for English Classes",
+      orgName: "Community Center Lowell",
+      description: "Seeking volunteers to help teach basic English twice a week.",
+      location: "Lowell, MA", // Location tag
+    },
+    {
+      id: 3,
+      title: "Household Items & Furniture",
+      orgName: "Manchester Help Group",
+      description: "Need gently used furniture, dishes, and bedding.",
+      location: "Manchester, NH", // Location tag
+    },
+  ];
+
+  const [addedPosts, setAddedPosts] = useState({});
+  const [selectedLocation, setSelectedLocation] = useState('');
+
+  // Handle the addition of "Added"
+  const handleAdd = (postId) => {
+    setAddedPosts((prevAddedPosts) => ({
+      ...prevAddedPosts,
+      [postId]: true,
+    }));
+  };
+
+  // Handle filter change
+  const handleLocationChange = (event) => {
+    setSelectedLocation(event.target.value);
+  };
+
+  // Filter posts based on the selected location
+  const filteredPosts = selectedLocation
+    ? posts.filter((post) => post.location === selectedLocation)
+    : posts;
+
+    return (
+      <div className="px-6 py-12 text-white">
+        {/* Logo/Link to Home */}
+        <Link
+          to="/"
+          className="absolute top-4 left-6 text-2xl text-blue-500 hover:text-blue-700"
+        >
+          PATHWAY
+        </Link>
+  
+        <h2 className="text-4xl font-bold text-center mb-6">Organization Requests</h2>
+  
+        {/* Location Filter */}
+        <div className="mb-6 text-center">
+          <select
+            value={selectedLocation}
+            onChange={handleLocationChange}
+            className="bg-gray-700 text-white px-4 py-2 rounded-full"
+          >
+            <option value="">All Locations</option>
+            <option value="Boston, MA">Boston, MA</option>
+            <option value="Lowell, MA">Lowell, MA</option>
+            <option value="Manchester, NH">Manchester, NH</option>
+          </select>
+        </div>
+  
+        {/* Scrollable Posts Container */}
+        <div className="max-w-4xl mx-auto overflow-y-scroll h-[calc(100vh-200px)]">
+          {filteredPosts.map((post) => (
+            <div key={post.id} className="bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-700 mb-6">
+              <h3 className="text-2xl font-semibold mb-2">{post.title}</h3>
+              <p className="text-gray-400 mb-1">
+                <strong>Organization:</strong> {post.orgName}
+              </p>
+              <p className="text-gray-300">{post.description}</p>
+              <p className="text-gray-300">
+                <strong>Location:</strong> {post.location}
+              </p>
+  
+              {/* Button to Add Post */}
+              <button
+                onClick={() => handleAdd(post.id)}
+                className="mt-4 bg-blue-600 text-black px-4 py-2 rounded-full hover:bg-blue-700 transition duration-200"
+              >
+                Sign me up!
+              </button>
+  
+              {/* Display "Added" if the button was clicked */}
+              {addedPosts[post.id] && <p className="mt-4 text-green-500">Request Sent!</p>}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+}
+
+const SignIn = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    role: "volunteer", // Default role selection
+  });
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Mock API Call - Signing in:", formData);
+    setMessage("Mock Sign-in successful!");
+    setTimeout(() => setMessage(""), 3000);
+
+    // Redirect based on role
+    if (formData.role === "volunteer") {
+      navigate("/posts");
+    } else if (formData.role === "organizer"){
+      navigate("/organizer");
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center px-6 py-12 overflow-auto w-full">
+      <div className="w-full flex justify-center">
+        <div className="max-w-md w-full bg-black p-10 rounded-xl shadow-xl border border-gray-800">
+          <h2 className="text-4xl font-bold text-center text-white">Sign In</h2>
+          <p className="text-gray-400 text-center mt-2">Welcome back to Pathway</p>
+          
+          <form className="mt-6 flex flex-col gap-6" onSubmit={handleSubmit}>
+            <div>
+              <label className="text-gray-300 block mb-2">Email</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="your@email.com"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full p-4 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="text-gray-300 block mb-2">Password</label>
+              <input
+                type="password"
+                name="password"
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full p-4 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="text-gray-300 block mb-2">Sign in as:</label>
+              <div className="flex gap-4 justify-center">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="role"
+                    value="volunteer"
+                    checked={formData.role === "volunteer"}
+                    onChange={handleChange}
+                    className="form-radio text-blue-500"
+                  />
+                  Volunteer
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="role"
+                    value="organizer"
+                    checked={formData.role === "organizer"}
+                    onChange={handleChange}
+                    className="form-radio text-blue-500"
+                  />
+                  Organizer
+                </label>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full text-black bg-blue-600 hover:bg-blue-700 p-4 rounded-lg font-bold shadow-lg transition duration-200"
+            >
+              Sign In
+            </button>
+          </form>
+          {message && <p className="text-center text-green-500 mt-4">{message}</p>}
+
+          <p className="text-gray-400 text-center mt-6">
+            Don't have an account? <Link to="/signup" className="text-blue-500 hover:text-blue-700">Sign Up</Link>
+          </p>
+
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const OrganizerDashboard = () => {
+  // Mock data for organizer's posts
+  const [posts, setPosts] = useState([
+    {
+      id: 1,
+      title: "Winter Coats Needed",
+      description: "Looking for warm coats, scarves, and hats for new arrivals.",
+      status: "Pending",
+      volunteers: [],
+    },
+    {
+      id: 2,
+      title: "Volunteers for English Classes",
+      description: "Seeking volunteers to help teach basic English twice a week.",
+      status: "Fulfilled",
+      volunteers: ["John Doe", "Jane Smith"],
+    },
+    {
+      id: 3,
+      title: "Household Items & Furniture",
+      description: "Need gently used furniture, dishes, and bedding.",
+      status: "Pending",
+      volunteers: ["Alice Johnson"],
+    },
+  ]);
+
+  // Function to delete a post
+  const handleDeletePost = (postId) => {
+    setPosts(posts.filter((post) => post.id !== postId));
+  };
+
+  // Function to add a new post
+  const handleAddPost = (newPost) => {
+    setPosts([...posts, newPost]);
+  };
+
+  return (
+    <div className="px-6 py-12 text-white">
+      {/* Logo/Link to Home */}
+      <Link
+          to="/"
+          className="absolute top-4 left-6 text-2xl text-blue-500 hover:text-blue-700"
+        >
+          PATHWAY
+        </Link>
+  
+        
+      <h2 className="text-4xl font-bold text-center mb-6">Organizer Dashboard</h2>
+
+      {/* Create New Post Button */}
+      <div className="text-center mb-8">
+        <Link
+          to="/create-post"
+          className="bg-blue-600 text-black px-6 py-3 rounded-full hover:bg-blue-700 transition duration-200"
+        >
+          Create New Post
+        </Link>
+      </div>
+
+      {/* List of Posts */}
+      <div className="max-w-4xl mx-auto">
+        {posts.map((post) => (
+          <div
+            key={post.id}
+            className="bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-700 mb-6"
+          >
+            <h3 className="text-2xl font-semibold mb-2">{post.title}</h3>
+            <p className="text-gray-300 mb-4">{post.description}</p>
+            <p className="text-gray-400 mb-2">
+              <strong>Status:</strong> {post.status}
+            </p>
+            <p className="text-gray-400 mb-2">
+              <strong>Volunteers:</strong>{" "}
+              {post.volunteers.length > 0 ? post.volunteers.join(", ") : "No volunteers yet."}
+            </p>
+
+            {/* Actions */}
+            <div className="flex justify-center gap-4 mt-4">
+              <button
+                onClick={() => handleDeletePost(post.id)}
+                className="bg-red-600 text-black px-4 py-2 rounded-full hover:bg-red-700 transition duration-200"
+              >
+                Delete Post
+              </button>
+              <button
+                onClick={() => console.log("Edit post:", post.id)}
+                className="bg-yellow-600 text-black px-4 py-2 rounded-full hover:bg-yellow-700 transition duration-200"
+              >
+                Edit Post
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const AppLayout = () => {
+  const location = useLocation();
+  const showHeader = !["/posts", "/organizer"].includes(location.pathname);
+
+  return (
+    <>
+      {showHeader && <Header />}
+      <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/feed" element={<Feed />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/posts" element={<Posts />} />
+            <Route path="/organizer" element={<OrganizerDashboard />} />
+      </Routes>
+    </>
+  );
+};
+
+
 //router
 function App() {
   return (
     <div className="bg-black min-h-screen">
       <Router>
         {/* Render the Header once so it remains consistent */}
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/feed" element={<Feed />} />
-          <Route path="/faq" element={<FAQ />} />
-          {/* You can add a Contact page similarly */}
-        </Routes>
+        <AppLayout />
       </Router>
     </div>
   );
