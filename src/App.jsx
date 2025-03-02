@@ -493,16 +493,31 @@ const OrganizerDashboard = () => {
   
         
       <h2 className="text-4xl font-bold text-center mb-6">Organizer Dashboard</h2>
-
-      {/* Create New Post Button */}
+      <div className="flex justify-center gap-4 mb-8">
+        
+        {/* Create New Post Button */}
       <div className="text-center mb-8">
         <Link
           to="/create-post"
-          className="bg-blue-600 text-black px-6 py-3 rounded-full hover:bg-blue-700 transition duration-200"
+          className="bg-blue-200 text-black px-6 py-3 rounded-full hover:bg-blue-700 transition duration-200"
         >
           Create New Post
         </Link>
       </div>
+
+      {/* See resources database */}
+      <div className="text-center mb-8">
+        <Link
+          to="/resources"
+          className="bg-blue-200 text-black px-6 py-3 rounded-full hover:bg-blue-700 transition duration-200"
+        >
+          Resources Database
+        </Link>
+      </div>
+
+      </div>
+
+      
 
       {/* List of Posts */}
       <div className="max-w-4xl mx-auto">
@@ -543,9 +558,218 @@ const OrganizerDashboard = () => {
   );
 };
 
+const ResourcesPage = () => {
+  // Mock data for resources
+  const [resources, setResources] = useState([
+    {
+      id: 1,
+      name: "Winter Coats",
+      description: "Looking for warm coats, scarves, and hats for new arrivals.",
+      status: "Pending",
+      volunteers: ["John Doe", "Jane Smith"],
+    },
+    {
+      id: 2,
+      name: "English Teachers",
+      description: "Seeking volunteers to help teach basic English twice a week.",
+      status: "Fulfilled",
+      volunteers: ["Alice Johnson"],
+    },
+    {
+      id: 3,
+      name: "Household Items",
+      description: "Need gently used furniture, dishes, and bedding.",
+      status: "Pending",
+      volunteers: [],
+    },
+  ]);
+
+  // Function to delete a resource
+  const handleDeleteResource = (resourceId) => {
+    setResources(resources.filter((resource) => resource.id !== resourceId));
+  };
+
+  return (
+    <div className="px-6 py-12 text-white">
+
+      {/* Logo/Link to Home */}
+      <Link
+          to="/"
+          className="absolute top-4 left-6 text-2xl text-blue-500 hover:text-blue-700"
+        >
+          PATHWAY
+        </Link>
+
+
+      <h2 className="text-4xl font-bold text-center mb-6">My Resources</h2>
+
+      {/* Create New Resource Button */}
+      <div className="text-center mb-8">
+        <Link
+          to="/create-resource"
+          className="bg-blue-200 text-black-900 px-6 py-3 rounded-full hover:bg-blue-700 transition duration-200"        >
+          Create New Resource
+        </Link>
+      </div>
+
+      {/* Resources Table */}
+      <div className="max-w-6xl mx-auto">
+        <table className="w-full bg-gray-800 rounded-lg shadow-lg border border-gray-700">
+          <thead>
+            <tr className="bg-gray-700">
+              <th className="px-6 py-3 text-left text-sm font-semibold">Resource Name</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold">Description</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold">Status</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold">Volunteers</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {resources.map((resource) => (
+              <tr key={resource.id} className="border-b border-gray-700 hover:bg-gray-750">
+                <td className="px-6 py-4 text-gray-300">{resource.name}</td>
+                <td className="px-6 py-4 text-gray-300">{resource.description}</td>
+                <td className="px-6 py-4 text-gray-300">
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm ${
+                      resource.status === "Pending"
+                        ? "bg-yellow-600 text-white"
+                        : "bg-green-600 text-white"
+                    }`}
+                  >
+                    {resource.status}
+                  </span>
+                </td>
+                <td className="px-6 py-4 text-gray-300">
+                  {resource.volunteers.length > 0 ? (
+                    <ul className="list-disc list-inside">
+                      {resource.volunteers.map((volunteer, index) => (
+                        <li key={index}>{volunteer}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No volunteers yet.</p>
+                  )}
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => console.log("Edit resource:", resource.id)}
+                      className="bg-yellow-600 text-black px-4 py-2 rounded-full hover:bg-yellow-700 transition duration-200"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteResource(resource.id)}
+                      className="bg-red-700 text-black px-4 py-2 rounded-full hover:bg-red-800 transition duration-200"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+const CreatePost = ({ handleAddPost }) => {
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    location: "",
+    status: "Pending", // Default status
+  });
+  const navigate = useNavigate();
+
+  // Handle form input changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  // Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newPost = {
+      id: Date.now(), // Generate a unique ID
+      title: formData.title,
+      description: formData.description,
+      location: formData.location,
+      status: formData.status,
+      volunteers: [], // Initialize with no volunteers
+    };
+    handleAddPost(newPost); // Add the new post to the list
+    navigate("/organizer-dashboard"); // Redirect to the dashboard
+  };
+
+  return (
+    <div className="px-6 py-12 text-white">
+      <h2 className="text-4xl font-bold text-center mb-6">Create New Post</h2>
+      <form className="max-w-2xl mx-auto" onSubmit={handleSubmit}>
+        {/* Title Field */}
+        <div className="mb-6">
+          <label className="text-gray-300 block mb-2">Title</label>
+          <input
+            type="text"
+            name="title"
+            placeholder="Enter a title for your post"
+            value={formData.title}
+            onChange={handleChange}
+            className="w-full p-4 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+
+        {/* Description Field */}
+        <div className="mb-6">
+          <label className="text-gray-300 block mb-2">Description</label>
+          <textarea
+            name="description"
+            placeholder="Describe the resource you need"
+            value={formData.description}
+            onChange={handleChange}
+            className="w-full p-4 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            rows="5"
+            required
+          />
+        </div>
+
+        {/* Location Field */}
+        <div className="mb-6">
+          <label className="text-gray-300 block mb-2">Location</label>
+          <select
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            className="w-full p-4 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          >
+            <option value="">Select a location</option>
+            <option value="Boston, MA">Boston, MA</option>
+            <option value="Lowell, MA">Lowell, MA</option>
+            <option value="Manchester, NH">Manchester, NH</option>
+          </select>
+        </div>
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-gray-900 px-6 py-3 rounded-full hover:bg-blue-700 transition duration-200"
+        >
+          Create Post
+        </button>
+      </form>
+    </div>
+  );
+};
+
 const AppLayout = () => {
   const location = useLocation();
-  const showHeader = !["/posts", "/organizer"].includes(location.pathname);
+  const showHeader = !["/posts", "/organizer", "/resources"].includes(location.pathname);
 
   return (
     <>
@@ -557,6 +781,7 @@ const AppLayout = () => {
             <Route path="/signin" element={<SignIn />} />
             <Route path="/posts" element={<Posts />} />
             <Route path="/organizer" element={<OrganizerDashboard />} />
+            <Route path="/resources" element={<ResourcesPage />} />
       </Routes>
     </>
   );
